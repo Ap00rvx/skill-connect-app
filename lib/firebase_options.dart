@@ -58,7 +58,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCnkCQNvgQvcfTuED2Gagk3ZFiTiT5WTpg',
-    appId: '1:785644481863:android:f075a29691ea2694113062',
+    appId: '1:785644481863:android:624ffa67f8363de8113062',
     messagingSenderId: '785644481863',
     projectId: 'shatter-66908',
     storageBucket: 'shatter-66908.firebasestorage.app',
@@ -73,4 +73,5 @@ class DefaultFirebaseOptions {
     iosClientId: '785644481863-ajbi8jvkosu8tsr848d08clkg8pf9m3t.apps.googleusercontent.com',
     iosBundleId: 'com.example.shatterVcs',
   );
+
 }

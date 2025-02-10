@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:785644481863:android:f075a29691ea2694113062",
+        "mobilesdk_app_id": "1:785644481863:android:624ffa67f8363de8113062",
         "android_client_info": {
-          "package_name": "com.exapmle.shatter_vcs"
+          "package_name": "com.example.shatter_vcs"
         }
       },
       "oauth_client": [
@@ -29,6 +29,13 @@
             {
               "client_id": "785644481863-mhlk644d4hchjmqt0h8h0147epcg253a.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "785644481863-ajbi8jvkosu8tsr848d08clkg8pf9m3t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.shatterVcs"
+              }
             }
           ]
         }

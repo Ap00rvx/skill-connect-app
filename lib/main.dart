@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shatter_vcs/bloc/bloc/auth_bloc.dart';
+import 'package:shatter_vcs/bloc/auth/auth_bloc.dart';
+import 'package:shatter_vcs/bloc/todo/todo_bloc.dart';
 import 'package:shatter_vcs/firebase_options.dart';
-import 'package:shatter_vcs/screens/auth/auth_page.dart';
 import 'package:shatter_vcs/widgets/auth_validation.dart';
 
 void main() async {
@@ -23,11 +23,16 @@ class RootApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => AuthBloc()),
+        BlocProvider(create: (_) => AuthBloc()),
+        BlocProvider(create: (_) => TodoBloc())
       ],
-      child: const MaterialApp(
+      child: MaterialApp(
+        theme: ThemeData(
+            primarySwatch: Colors.blue,
+            scaffoldBackgroundColor: Colors.white,
+            fontFamily: "default"),
         title: 'Shatter VCS',
-        home: AuthValidation(),
+        home: const AuthValidation(),
       ),
     );
   }

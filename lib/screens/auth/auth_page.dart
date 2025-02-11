@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shatter_vcs/bloc/bloc/auth_bloc.dart';
+import 'package:shatter_vcs/bloc/auth/auth_bloc.dart';
+import 'package:shatter_vcs/screens/home/home_page.dart';
 import 'package:shatter_vcs/screens/static/terms_policy_page.dart';
 import 'package:shatter_vcs/theme/style/button_style.dart';
 import 'package:shatter_vcs/theme/style/text_field_decoration.dart';
@@ -45,7 +46,9 @@ class _AuthPageState extends State<AuthPage>
       context.read<AuthBloc>().add(AuthSignIn(email, password));
     }
   }
-
+  void _handleGoogleAuth()async{
+    context.read<AuthBloc>().add(AuthGoogleSignIn()); 
+  }
   void _submitSignUp() {
     if (_formKeySignUp.currentState!.validate()) {
       final email = _signUpEmailController.text;
@@ -94,11 +97,11 @@ class _AuthPageState extends State<AuthPage>
             Navigator.pop(context);
             showSnackbar('Welcome, ${state.user.email}!', false, context);
             if (mounted) {
-              // Navigator.pushAndRemoveUntil(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => const HomePage()),
-              //   (route) => false,
-              // );
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePage()),
+                (route) => false,
+              );
             }
           } else if (state is AuthFailure) {
             Navigator.pop(context);
@@ -149,7 +152,7 @@ class _AuthPageState extends State<AuthPage>
                   ],
                 ),
                 Container(
-                  constraints: const BoxConstraints(maxHeight: 400),
+                  constraints: const BoxConstraints(maxHeight: 500),
                   child: TabBarView(
                     controller: _tabController,
                     children: [
@@ -211,6 +214,35 @@ class _AuthPageState extends State<AuthPage>
               onPressed: _submitLogin,
               child: const Text('Login', style: TextStyle(fontSize: 16)),
             ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+                onPressed: _handleGoogleAuth,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 16.0),
+                  textStyle: const TextStyle(fontSize: 16),
+                  fixedSize: const Size(double.infinity, 50),
+                  minimumSize: const Size(400, 60),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/google.png',
+                      height: 34,
+                      width: 34,
+                      fit: BoxFit.cover,
+                    ),
+                    const SizedBox(width: 16),
+                    const Text('Continue with Google',
+                        style: TextStyle(fontSize: 18)),
+                  ],
+                ))
           ],
         ),
       ),
@@ -280,6 +312,35 @@ class _AuthPageState extends State<AuthPage>
               onPressed: _submitSignUp,
               child: const Text('Sign Up', style: TextStyle(fontSize: 16)),
             ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+                onPressed: _handleGoogleAuth,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 16.0),
+                  textStyle: const TextStyle(fontSize: 16),
+                  fixedSize: const Size(double.infinity, 50),
+                  minimumSize: const Size(400, 60),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/google.png',
+                      height: 34,
+                      width: 34,
+                      fit: BoxFit.cover,
+                    ),
+                    const SizedBox(width: 16),
+                    const Text('Continue with Google',
+                        style: TextStyle(fontSize: 18)),
+                  ],
+                ))
           ],
         ),
       ),

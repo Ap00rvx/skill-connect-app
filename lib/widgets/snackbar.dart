@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
-void showSnackbar(String message, bool isError, BuildContext context) {
+void showSnackbar(String message, bool isError, BuildContext context ,{bool top = false}) {
+  // top is used to show the snackbar at the top of the screen
+  
   ScaffoldMessenger.of(context).showSnackBar(
+    
     SnackBar(
+
       content: Text(message,style:const TextStyle(
         color: Colors.white
 

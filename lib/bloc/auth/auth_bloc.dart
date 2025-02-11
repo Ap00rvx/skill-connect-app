@@ -4,7 +4,6 @@ import 'package:meta/meta.dart';
 import 'package:shatter_vcs/config/app_exception.dart';
 import 'package:shatter_vcs/services/auth_service.dart';
 
-
 part 'auth_event.dart';
 part 'auth_state.dart';
 
@@ -27,5 +26,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       response.fold((user) => emit(AuthSuccess(user)),
           (exception) => emit(AuthFailure(exception)));
     });
+    on<AuthGoogleSignIn>((event, emit) async {
+      emit(AuthLoading());
+      final response = await AuthService().signInWithGoogle();
+      response.fold((user) => emit(AuthSuccess(user)),
+          (exception) => emit(AuthFailure(exception)));
+    });
+    
   }
 }

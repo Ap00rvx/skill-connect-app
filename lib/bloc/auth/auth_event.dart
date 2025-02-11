@@ -17,3 +17,5 @@ final class AuthSignIn extends AuthEvent {
 
   AuthSignIn(this.email, this.password);
 }
+final class AuthGoogleSignIn extends AuthEvent {}
+final class AuthSignOut extends AuthEvent {}

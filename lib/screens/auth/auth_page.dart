@@ -113,12 +113,12 @@ class _AuthPageState extends State<AuthPage>
             );
           }
           if (state is AuthSignUpSuccess) {
-            isSignUp = true; // Set flag to prevent HomePage redirection
-            Navigator.pop(context); // Close loading dialog
+            isSignUp = true;
+            Navigator.pop(context);
             showSnackbar('Welcome, ${state.user.email}!', false, context);
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => UserDetailsPage()),
+              MaterialPageRoute(builder: (context) => const UserDetailsPage()),
             );
           }
           if (state is AuthSuccess) {
@@ -126,7 +126,7 @@ class _AuthPageState extends State<AuthPage>
             showSnackbar('Welcome, ${state.user.email}!', false, context);
 
             if (!isSignUp) {
-              // Only navigate to HomePage if NOT signup
+          
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const HomePage()),

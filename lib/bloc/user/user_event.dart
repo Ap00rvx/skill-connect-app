@@ -8,3 +8,4 @@ class SaveUserDetails extends UserEvent {
   File? image; 
   SaveUserDetails(this.user, this.image);
 }
+class GetUserDetails extends UserEvent {}

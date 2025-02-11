@@ -16,13 +16,24 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final user = event.user;
       final image = event.image;
       try {
-        final response = await UserService().saveUserDetails(user ,image);
+        final response = await UserService().saveUserDetails(user, image);
 
         response.fold((message) => emit(UserSaved(user)),
             (exception) => emit(UserFailure(exception)));
       } catch (e) {
         print(e);
         emit(UserFailure(NetworkException("Error saving user details", 500)));
+      }
+    });
+    on<GetUserDetails>((event, emit) async {
+      emit(UserLoading());
+      try {
+        final response = await UserService().getUserDetails();
+        response.fold((user) => emit(UserSuccess(user)),
+            (exception) => emit(UserFailure(exception)));
+      } catch (e) {
+        print(e);
+        emit(UserFailure(NetworkException("Error fetching user details", 500)));
       }
     });
   }

@@ -61,24 +61,6 @@ class _ToDoPageState extends State<ToDoPage> {
           backgroundColor: Colors.blue,
           foregroundColor: Colors.white,
           title: const Text("Goal List"),
-          actions: [
-            IconButton(
-                onPressed: () async {
-                  showSnackbar("User Signed out", false, context);
-                  if (mounted) {
-                    await AuthService().signOut().then(
-                          (value) => Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const AuthPage(),
-                            ),
-                            (route) => false,
-                          ),
-                        );
-                  }
-                },
-                icon: Icon(FluentIcons.sign_out_20_filled)),
-          ],
         ),
         body: SingleChildScrollView(
           child: Padding(

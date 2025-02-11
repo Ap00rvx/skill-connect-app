@@ -159,6 +159,8 @@ class _ToDoPageState extends State<ToDoPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
+                _buildDailyAnalysis(),
+                const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.all(3.0),
                   child: Row(
@@ -177,7 +179,9 @@ class _ToDoPageState extends State<ToDoPage> {
                     ],
                   ),
                 ),
+
                 const SizedBox(height: 20),
+
                 _buildToDoList()
               ],
             ),
@@ -326,6 +330,76 @@ class _ToDoPageState extends State<ToDoPage> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildDailyAnalysis() {
+    return BlocBuilder<TodoBloc, TodoState>(
+      builder: (context, state) {
+        if (state is TodoLoading) {
+          return _buildLoadingShimmer();
+        } else if (state is TodoSuccess) {
+          final todos = state.todos;
+
+          int completedTasks = todos.where((todo) => todo.isCompleted).length;
+          int incompleteTasks = todos.length - completedTasks;
+
+          return Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(color: Colors.grey.shade200)),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Daily Task Analysis",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    _buildAnalysisRow("Total Tasks", todos.length, Colors.blue),
+                    _buildAnalysisRow(
+                        "Completed Tasks", completedTasks, Colors.green),
+                    _buildAnalysisRow(
+                        "Incomplete Tasks", incompleteTasks, Colors.orange),
+                  ],
+                ),
+              ),
+            ),
+          );
+        } else {
+          return const Center(child: Text("No tasks to analyze"));
+        }
+      },
+    );
+  }
+
+// Helper function to create an analysis row
+  Widget _buildAnalysisRow(String label, int count, Color color) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+          Chip(
+            label: Text(
+              count.toString(),
+              style: const TextStyle(color: Colors.white),
+            ),
+            backgroundColor: color,
+          ),
+        ],
+      ),
     );
   }
 

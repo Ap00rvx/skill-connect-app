@@ -1,5 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:shatter_vcs/screens/profile/profile_page.dart';
 import 'package:shatter_vcs/screens/todo/to_do_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -10,11 +11,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List pages = [
+  List pages = const [
     Placeholder(),
     ToDoPage(),
     Placeholder(),
-    Placeholder(),
+    ProfilePage(),
   ];
   int index = 1;
   @override

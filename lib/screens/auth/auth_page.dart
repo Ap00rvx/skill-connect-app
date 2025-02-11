@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shatter_vcs/bloc/auth/auth_bloc.dart';
+import 'package:shatter_vcs/screens/auth/user_details_page.dart';
 import 'package:shatter_vcs/screens/home/home_page.dart';
 import 'package:shatter_vcs/screens/static/terms_policy_page.dart';
 import 'package:shatter_vcs/theme/style/button_style.dart';
@@ -46,14 +47,19 @@ class _AuthPageState extends State<AuthPage>
       context.read<AuthBloc>().add(AuthSignIn(email, password));
     }
   }
-  void _handleGoogleAuth()async{
-    context.read<AuthBloc>().add(AuthGoogleSignIn()); 
+
+  void _handleGoogleAuth() async {
+    context.read<AuthBloc>().add(AuthGoogleSignIn());
   }
+
+  bool isSignUp = false;
+
   void _submitSignUp() {
     if (_formKeySignUp.currentState!.validate()) {
       final email = _signUpEmailController.text;
       final password = _signUpPasswordController.text;
       final name = _signUpNameController.text;
+      isSignUp = true;
 
       context.read<AuthBloc>().add(AuthSignUp(email, password, name));
     }
@@ -93,31 +99,40 @@ class _AuthPageState extends State<AuthPage>
       ],
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
+          if (state is AuthFailure) {
+            Navigator.pop(context);
+            showSnackbar(state.exception.message, true, context);
+          }
+          if (state is AuthLoading) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          if (state is AuthSignUpSuccess) {
+            isSignUp = true; // Set flag to prevent HomePage redirection
+            Navigator.pop(context); // Close loading dialog
+            showSnackbar('Welcome, ${state.user.email}!', false, context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => UserDetailsPage()),
+            );
+          }
           if (state is AuthSuccess) {
             Navigator.pop(context);
             showSnackbar('Welcome, ${state.user.email}!', false, context);
-            if (mounted) {
+
+            if (!isSignUp) {
+              // Only navigate to HomePage if NOT signup
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const HomePage()),
                 (route) => false,
               );
             }
-          } else if (state is AuthFailure) {
-            Navigator.pop(context);
-            showSnackbar(state.exception.message, true, context);
-          } else {
-            showDialog(
-                barrierColor: Colors.white.withOpacity(0.5),
-                context: context,
-                barrierDismissible: false,
-                builder: (context) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.blue,
-                    ),
-                  );
-                });
           }
         },
         child: Padding(
@@ -258,6 +273,20 @@ class _AuthPageState extends State<AuthPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: _signUpNameController,
+              cursorColor: Colors.blue,
+              decoration: customInputDecoration(
+                  hintText: 'Name', prefixIcon: Icons.person),
+              keyboardType: TextInputType.name,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your name';
+                }
+                return null;
+              },
+            ),
             const SizedBox(height: 20),
             TextFormField(
               controller: _signUpEmailController,

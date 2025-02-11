@@ -21,13 +21,12 @@ class _TaskTileState extends State<TaskTile> {
   @override
   void initState() {
     super.initState();
-    isCompleted = widget.todo.isCompleted;
   }
 
   @override
   Widget build(BuildContext context) {
     final todo = widget.todo;
-
+    isCompleted = todo.isCompleted;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(

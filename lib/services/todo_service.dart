@@ -5,22 +5,13 @@ import 'package:intl/intl.dart';
 
 class TodoService {
   final _storage = LocalStorageService();
-
-  // Generate a list of dates from 2 days ago to 6 days ahead
   List<DateTime> generateDates() {
     return List.generate(8, (i) => DateTime.now().add(Duration(days: i - 2)));
   }
-
-  // Add task to storage
   Future<void> addTask(Todo todo) async {
     final tasks = await getToDoList(todo.date);
-    print("Existing tasks: $tasks"); // Debugging log
-
     tasks.add(todo);
-
-    // Encode each task to a proper JSON string
     final stringList = tasks.map((task) => jsonEncode(task.toJson())).toList();
-    print("Saving tasks: $stringList"); // Debugging log
 
     final formattedDate = DateFormat('ddMMyy').format(todo.date);
     await _storage.saveList(formattedDate, stringList);
@@ -28,7 +19,6 @@ class TodoService {
 
   Future<void> updateStatus(Todo todo) async {
     final tasks = await getToDoList(todo.date);
-    print("Existing tasks: $tasks"); // Debugging log
     tasks.forEach((element) {
       if (element.title == todo.title) {
         element.isCompleted = todo.isCompleted;
@@ -46,9 +36,6 @@ class TodoService {
   Future<List<Todo>> getToDoList(DateTime date) async {
     final formattedDate = DateFormat('ddMMyy').format(date);
     final list = await _storage.getList(formattedDate);
-
-    print("Retrieved tasks: $list"); // Debugging log
-
     try {
       return list.map((taskJson) {
         print("Decoding: $taskJson"); // Log each JSON string before decoding
@@ -68,12 +55,8 @@ class TodoService {
   }
   Future<void> deleteTask(Todo todo) async {
     final tasks = await getToDoList(todo.date);
-    print("Existing tasks: $tasks"); // Debugging log
     tasks.removeWhere((element) => element.title == todo.title);
-    // Encode each task to a proper JSON string
     final stringList = tasks.map((task) => jsonEncode(task.toJson())).toList();
-    print("Saving tasks: $stringList"); // Debugging log
-
     final formattedDate = DateFormat('ddMMyy').format(todo.date);
     await _storage.saveList(formattedDate, stringList);
   }

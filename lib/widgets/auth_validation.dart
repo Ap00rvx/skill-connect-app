@@ -23,6 +23,8 @@ class _AuthValidationState extends State<AuthValidation> {
             );
           }
           if (snapshot.hasData) {
+            print(
+                '\x1B[36m Welcome back !! ${snapshot.data!.displayName} \x1B[0m');
             return const HomePage();
           }
           return const AuthPage();

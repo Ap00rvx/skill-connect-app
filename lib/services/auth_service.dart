@@ -13,7 +13,7 @@ class AuthService {
           email: email, password: password);
 
       if (response.user != null) {
-        response.user!.updateDisplayName(name);
+        await response.user!.updateDisplayName(name);
         return left(response.user!);
       }
 

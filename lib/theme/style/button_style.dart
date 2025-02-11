@@ -10,6 +10,7 @@ final buttonStyle = ElevatedButton.styleFrom(
   textStyle: const TextStyle(fontSize: 16),
   fixedSize: const Size(double.infinity, 50),
   minimumSize:const  Size(400, 60),
+  
 );
 
 

@@ -68,5 +68,19 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
         }
       },
     );
+    on<FilterTodos>((event, emit) async {
+      try {
+        final date = event.date;
+        if (event.isCompleted) {
+          final tasks = await TodoService().filterCompletedTodos(date);
+          emit(TodoSuccess(tasks));
+        } else {
+          final tasks = await TodoService().filterIncompletedTodos(date);
+          emit(TodoSuccess(tasks));
+        }
+      } on AppException catch (e) {
+        emit(TodoFailure(e));
+      }
+    });
   }
 }

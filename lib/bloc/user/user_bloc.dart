@@ -36,5 +36,19 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserFailure(NetworkException("Error fetching user details", 500)));
       }
     });
+
+    on<UpdateUserDetails>((event, emit) async {
+      emit(UserLoading());
+      final user = event.user;
+      final image = event.image;
+      try {
+        final response = await UserService().updateUserDetails(user, image);
+        response.fold((message) => emit(UserUpdated(user)),
+            (exception) => emit(UserFailure(exception)));
+      } catch (e) {
+        print(e);
+        emit(UserFailure(NetworkException("Error updating user details", 500)));
+      }
+    });
   }
 }

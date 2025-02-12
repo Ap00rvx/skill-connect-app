@@ -2,13 +2,16 @@ import 'dart:io';
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:shatter_vcs/bloc/user/user_bloc.dart';
 import 'package:shatter_vcs/theme/style/button_style.dart';
 import 'package:shatter_vcs/theme/style/text_field_decoration.dart';
 import 'package:shatter_vcs/widgets/circular_avatar_wrapper.dart';
 import 'package:shatter_vcs/widgets/profile_shimmer.dart';
+import 'package:shatter_vcs/widgets/snackbar.dart';
 import 'package:shatter_vcs/widgets/utilities_widget.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -56,7 +59,20 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  void _updateProfile() {}
+  void _updateProfile() async {
+    final user = (context.read<UserBloc>().state as UserSuccess).user;
+    // print(user.toJson());
+    final updatedUser = user.copyWith(
+      portfolio: _portfolioController.text.isNotEmpty
+          ? _portfolioController.text.trim()
+          : null,
+      bio: _bioController.text.isNotEmpty ? _bioController.text.trim() : null,
+      skills: _skills.isNotEmpty ? _skills : null,
+    );
+    context
+        .read<UserBloc>()
+        .add(UpdateUserDetails(updatedUser, _newProfileImage));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +87,12 @@ class _ProfilePageState extends State<ProfilePage> {
         builder: (context, state) {
           if (state is UserLoading) {
             return const ProfileShimmer();
+          }
+          if (state is UserUpdated) {
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              showSnackbar("Profile updated Successfully!", false, context);
+            });
+            context.read<UserBloc>().add(GetUserDetails());
           }
           if (state is UserSuccess) {
             final user = state.user;
@@ -103,6 +125,21 @@ class _ProfilePageState extends State<ProfilePage> {
                                 : null,
                           ),
                         ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: Text.rich(
+                        TextSpan(children: [
+                          const TextSpan(
+                              text: "Joined - ",
+                              style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.bold)),
+                          TextSpan(
+                              text:
+                                  " ${DateFormat.yMMMMd().format(user.joinedAt)}",
+                              style: TextStyle(color: Colors.grey[600]))
+                        ]),
                       ),
                     ),
                     const SizedBox(height: 20),

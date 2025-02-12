@@ -162,13 +162,78 @@ class _ToDoPageState extends State<ToDoPage> {
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
+                _buildFilterChips(),
+
+                const SizedBox(height: 10),
 
                 _buildToDoList()
               ],
             ),
           ),
         ));
+  }
+
+  int selected = 0;
+
+  Widget _buildFilterChips() {
+    return BlocBuilder<TodoBloc, TodoState>(
+      builder: (context, state) {
+        if (state is TodoSuccess) {
+          return Wrap(
+            children: [
+              FilterChip(
+                selectedColor: Colors.blue,
+                backgroundColor: Colors.grey.shade200,
+                selected: selected == 0,
+                label: const Text("All"),
+                showCheckmark: false,
+                onSelected: (selected) {
+                  setState(() {
+                    this.selected = 0;
+                  });
+                  context.read<TodoBloc>().add(GetTodos(selectedDate));
+                },
+              ),
+              const SizedBox(width: 10),
+              FilterChip(
+                selectedColor: Colors.blue,
+                backgroundColor: Colors.grey.shade200,
+                selected: selected == 1,
+                showCheckmark: false,
+                label: const Text(
+                  "Completed",
+                ),
+                onSelected: (selected) {
+                  setState(() {
+                    this.selected = 1;
+                  });
+                  context.read<TodoBloc>().add(FilterTodos(true, selectedDate));
+                },
+              ),
+              const SizedBox(width: 10),
+              FilterChip(
+                selectedColor: Colors.blue,
+                backgroundColor: Colors.grey.shade200,
+                selected: selected == 2,
+                showCheckmark: false,
+                label: const Text("Incomplete"),
+                onSelected: (selected) {
+                  setState(() {
+                    this.selected = 2;
+                  });
+                  context
+                      .read<TodoBloc>()
+                      .add(FilterTodos(false, selectedDate));
+                },
+              ),
+            ],
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
+    );
   }
 
   void showAddTaskDialog() {
@@ -392,6 +457,7 @@ class _ToDoPageState extends State<ToDoPage> {
           return _buildLoadingShimmer();
         } else if (state is TodoSuccess) {
           final todos = state.todos;
+          print(todos);
           if (todos.isEmpty) {
             final formattedDate =
                 "${selectedDate.day}-${months[selectedDate.month - 1]}";

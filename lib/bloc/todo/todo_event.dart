@@ -14,6 +14,7 @@ final class AddTodo extends TodoEvent {
 
   AddTodo(this.todo);
 }
+
 final class UpdateTodoStatus extends TodoEvent {
   final Todo todo;
 
@@ -24,4 +25,11 @@ final class DeleteTodo extends TodoEvent {
   final Todo todo;
 
   DeleteTodo(this.todo);
+}
+
+final class FilterTodos extends TodoEvent {
+  final bool isCompleted;
+  final DateTime date;
+
+  FilterTodos(this.isCompleted, this.date );
 }

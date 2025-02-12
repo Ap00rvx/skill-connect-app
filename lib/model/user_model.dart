@@ -5,7 +5,7 @@ class UserModel {
   String? portfolio;
   String? bio;
   String? profilePicture;
-  List<String>? skills; 
+  List<String>? skills;
   UserModel({
     required this.name,
     required this.email,
@@ -38,5 +38,26 @@ class UserModel {
       'profilePicture': profilePicture,
       'skills': skills,
     };
+  }
+
+  // copy with method
+  UserModel copyWith({
+    String? name,
+    String? email,
+    DateTime? joinedAt,
+    String? portfolio,
+    String? bio,
+    String? profilePicture,
+    List<String>? skills,
+  }) {
+    return UserModel(
+      name: name ?? this.name,
+      email: email ?? this.email,
+      joinedAt: joinedAt ?? this.joinedAt,
+      portfolio: portfolio ?? this.portfolio,
+      bio: bio ?? this.bio,
+      profilePicture: profilePicture ?? this.profilePicture,
+      skills: skills ?? this.skills,
+    );
   }
 }

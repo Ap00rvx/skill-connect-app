@@ -21,3 +21,7 @@ final class UserSaved extends UserState {
   final UserModel user;
   UserSaved(this.user);
 }
+final class UserUpdated extends UserState{
+  final UserModel user;
+  UserUpdated(this.user);
+}

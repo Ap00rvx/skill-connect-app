@@ -32,6 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _portfolioController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _skillController = TextEditingController();
+  final TextEditingController _gitController = TextEditingController();
   List<String> _skills = [];
 
   Future<void> _pickImage() async {
@@ -49,6 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         _skills.add(_skillController.text.trim());
         _skillController.clear();
+        print(_skills);
       });
     }
   }
@@ -66,9 +68,17 @@ class _ProfilePageState extends State<ProfilePage> {
       portfolio: _portfolioController.text.isNotEmpty
           ? _portfolioController.text.trim()
           : null,
-      bio: _bioController.text.isNotEmpty ? _bioController.text.trim() : null,
+      bio: _bioController.text.isNotEmpty
+          ? _bioController.text.trim()
+          : user.bio,
       skills: _skills.isNotEmpty ? _skills : null,
+      github: _gitController.text.isNotEmpty
+          ? _gitController.text.trim()
+          : user.github,
     );
+    _gitController.clear();
+    _portfolioController.clear();
+    _bioController.clear();
     context
         .read<UserBloc>()
         .add(UpdateUserDetails(updatedUser, _newProfileImage));
@@ -91,6 +101,12 @@ class _ProfilePageState extends State<ProfilePage> {
           if (state is UserUpdated) {
             SchedulerBinding.instance.addPostFrameCallback((_) {
               showSnackbar("Profile updated Successfully!", false, context);
+            });
+            context.read<UserBloc>().add(GetUserDetails());
+          }
+          if (state is UserFailure) {
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              showSnackbar(state.exception.message, true, context);
             });
             context.read<UserBloc>().add(GetUserDetails());
           }
@@ -128,6 +144,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    _buildProjectCountAndConnectionCount(
+                        user.projectsCount, user.connectionsCount),
+                    const SizedBox(height: 20),
                     Center(
                       child: Text.rich(
                         TextSpan(children: [
@@ -162,7 +181,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     _buildTextField("Portfolio Link", _portfolioController,
                         hintText:
                             user.portfolio ?? "Enter your portfolio link"),
-
+                    const SizedBox(height: 10),
+                    const Text("GitHub Link",
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold)),
+                    _buildTextField("Github", _gitController,
+                        hintText: user.github ?? "Enter your Github link"),
+                    const SizedBox(height: 10),
                     // **Bio (Prefilled as Hint)**
                     const Text("Bio (Optional)",
                         style: TextStyle(
@@ -281,8 +306,53 @@ class _ProfilePageState extends State<ProfilePage> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         controller: controller,
+        minLines: label == "Bio" ? 4 : 1,
+        maxLines: label == "Bio" ? 5 : 1,
         decoration: customInputDecoration(hintText: hintText ?? label),
       ),
+    );
+  }
+
+  Widget _buildProjectCountAndConnectionCount(
+    int projectsCount,
+    int connectionsCount,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.grey.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey[300]!),
+          ),
+          child: Column(
+            children: [
+              const Text("Contributions",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(projectsCount.toString(),
+                  style: TextStyle(fontSize: 23, color: Colors.grey[600])),
+            ],
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.grey.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey[300]!),
+          ),
+          child: Column(
+            children: [
+              const Text("Connections",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(connectionsCount.toString(),
+                  style: TextStyle(fontSize: 23, color: Colors.grey[600])),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

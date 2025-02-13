@@ -18,7 +18,7 @@ class ProfileShimmer extends StatelessWidget {
                 baseColor: Colors.grey[300]!,
                 highlightColor: Colors.grey[100]!,
                 child: CircleAvatar(
-                  radius: 70,
+                  radius: 100,
                   backgroundColor: Colors.grey[300],
                 ),
               ),
@@ -26,25 +26,30 @@ class ProfileShimmer extends StatelessWidget {
             const SizedBox(height: 20),
 
             // **Shimmer Name & Email Fields**
-            _shimmerTextBox(height: 20, width: 250),
-            const SizedBox(height: 10),
-            _shimmerTextBox(height: 20, width: 200),
-            const SizedBox(height: 20),
+            _shimmerLabel(width: 80),
+            _shimmerTextBox(height: 20, width: double.infinity),
+            const SizedBox(height: 15),
+            _shimmerLabel(width: 80),
+            _shimmerTextBox(height: 20, width: double.infinity),
+            const SizedBox(height: 25),
 
             // **Shimmer Portfolio & Bio Fields**
-            _shimmerTextBox(height: 15, width: double.infinity),
-            const SizedBox(height: 10),
-            _shimmerTextBox(height: 15, width: double.infinity),
-            const SizedBox(height: 20),
+            _shimmerLabel(width: 130),
+            _shimmerTextBox(height: 18, width: double.infinity),
+            const SizedBox(height: 15),
+            _shimmerLabel(width: 80),
+            _shimmerTextBox(height: 50, width: double.infinity), // Bio
+            const SizedBox(height: 25),
 
             // **Shimmer Skills Section**
-            _shimmerTextBox(height: 15, width: 100),
+            _shimmerLabel(width: 60),
             const SizedBox(height: 10),
             Wrap(
               spacing: 8.0,
+              runSpacing: 8.0,
               children: List.generate(3, (index) => _shimmerChip()),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 25),
 
             // **Shimmer Button**
             Center(
@@ -61,7 +66,31 @@ class ProfileShimmer extends StatelessWidget {
                 ),
               ),
             ),
+            _shimmerTextBox(height: 70, width: double.infinity),
+            const SizedBox(height: 10),
+            _shimmerTextBox(height: 70, width: double.infinity),
+            const SizedBox(height: 10),
+            _shimmerTextBox(height: 70, width: double.infinity),
+            const SizedBox(height: 10),
+            _shimmerTextBox(height: 70, width: double.infinity),
           ],
+        ),
+      ),
+    );
+  }
+
+  // **Helper Widget: Shimmer Label (Title for each field)**
+  Widget _shimmerLabel({required double width}) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        height: 14,
+        width: width,
+        margin: const EdgeInsets.only(bottom: 5),
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(4.0),
         ),
       ),
     );

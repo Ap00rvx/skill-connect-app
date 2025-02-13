@@ -25,6 +25,8 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
   final TextEditingController _portfolioController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _skillController = TextEditingController();
+  final _gitController = TextEditingController();
+
   List<String> _skills = []; // Store skills
 
   // **Pick Image Function**
@@ -65,16 +67,18 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     String portfolio = _portfolioController.text.trim();
     String bio = _bioController.text.trim();
     File? image = File(_profileImage!.path);
-    
+
     context.read<UserBloc>().add(SaveUserDetails(
         UserModel(
-            name: name,
-            email: email,
-            joinedAt: DateTime.now(),
-            profilePicture: imageUrl,
-            portfolio: portfolio,
-            bio: bio,
-            skills: _skills),
+          name: name,
+          email: email,
+          joinedAt: DateTime.now(),
+          profilePicture: imageUrl,
+          portfolio: portfolio,
+          bio: bio,
+          skills: _skills,
+          id: FirebaseAuth.instance.currentUser!.uid,
+        ),
         image));
   }
 
@@ -146,6 +150,13 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                     style:
                         TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                 _buildTextField("Bio (Optional)", _bioController),
+
+                // **Skills Input**
+                const SizedBox(height: 10),
+                const Text("GitHub",
+                    style:
+                        TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                _buildTextField("Github Link", _gitController),
 
                 // **Skills Input**
                 const SizedBox(height: 10),

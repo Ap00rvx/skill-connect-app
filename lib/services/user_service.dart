@@ -46,9 +46,16 @@ class UserService {
             .update(user.toJson())
             .then((_) => print("User details updated successfully"));
         return left("User details updated successfully");
+      } else {
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .update(user.toJson())
+            .then((_) => print("User details updated successfully"));
+        return left("User details updated successfully");
       }
-      return right(NetworkException("Error updating user details", 500));
     } catch (e) {
+      print(e);
       return right(NetworkException("Error updating user details", 500));
     }
   }

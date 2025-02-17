@@ -12,6 +12,7 @@ final class AuthSuccess extends AuthState {
 
   AuthSuccess(this.user);
 }
+
 final class AuthSignUpSuccess extends AuthState {
   final User user;
 

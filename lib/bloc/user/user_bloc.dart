@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:shatter_vcs/config/network_exception.dart';
+import 'package:shatter_vcs/locator.dart';
 import 'package:shatter_vcs/model/user_model.dart';
 import 'package:shatter_vcs/services/user_service.dart';
 
@@ -28,7 +29,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<GetUserDetails>((event, emit) async {
       emit(UserLoading());
       try {
-        final response = await UserService().getUserDetails();
+        final response = await locator.get<UserService>().getUserDetails();
         response.fold((user) => emit(UserSuccess(user)),
             (exception) => emit(UserFailure(exception)));
       } catch (e) {

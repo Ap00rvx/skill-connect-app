@@ -11,9 +11,13 @@ class UserService {
   final _firebaseAuth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
 
+  UserModel? _user;
+
   Future<Either<String, NetworkException>> saveUserDetails(
       UserModel user, File? image) async {
     final userId = _firebaseAuth.currentUser!.uid;
+    user.id = userId;
+
     if (image != null) {
       final response = await CloudinaryService().uploadImage(image);
       response.fold(
@@ -34,6 +38,7 @@ class UserService {
       UserModel user, File? image) async {
     try {
       final userId = _firebaseAuth.currentUser!.uid;
+      user.id = userId;
       if (image != null) {
         final response = await CloudinaryService().uploadImage(image);
         response.fold((url) => user.profilePicture = url,
@@ -62,10 +67,13 @@ class UserService {
 
   Future<Either<UserModel, NetworkException>> getUserDetails() async {
     final userId = _firebaseAuth.currentUser!.uid;
+
     try {
       final response = await _firestore.collection('users').doc(userId).get();
       if (response.exists) {
         final user = UserModel.fromJson(response.data()!);
+        _user = user;
+        print(_user?.toJson());
         return left(user);
       }
       return right(NetworkException("User not found", 404));
@@ -73,4 +81,6 @@ class UserService {
       return right(NetworkException("Error fetching user details", 500));
     }
   }
+
+  UserModel? get user => _user;
 }

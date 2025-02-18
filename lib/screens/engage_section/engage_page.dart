@@ -1,6 +1,8 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shatter_vcs/bloc/question/question_bloc.dart';
 import 'package:shatter_vcs/screens/engage_section/add_question_page.dart';
 import 'package:shatter_vcs/screens/engage_section/questions_section.dart';
 import 'package:shatter_vcs/theme/style/custom_route.dart';
@@ -14,8 +16,9 @@ class EngagePage extends StatefulWidget {
 
 class _EngagePageState extends State<EngagePage> with TickerProviderStateMixin {
   final _searchController = TextEditingController();
+  int index = 2;
   late final TabController _tabController =
-      TabController(length: 5, vsync: this, initialIndex: 2);
+      TabController(length: 4, vsync: this, initialIndex: 2);
 
   final tabs = const [
     Tab(
@@ -30,10 +33,21 @@ class _EngagePageState extends State<EngagePage> with TickerProviderStateMixin {
     Tab(
       text: "Latest",
     ),
-    Tab(
-      text: "Trending",
-    ),
   ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _tabController.addListener(() {
+      setState(() {
+        index = _tabController.index;
+      });
+    });
+    BlocProvider.of<QuestionBloc>(context).add(GetQuestions(
+      index: index,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,9 +77,17 @@ class _EngagePageState extends State<EngagePage> with TickerProviderStateMixin {
               child: Align(
                 alignment: Alignment.center, // Align tab bar properly
                 child: TabBar(
+                  onTap: (index) {
+                    print(index);
+                    // print current state
+                    print(BlocProvider.of<QuestionBloc>(context).state);
+                    BlocProvider.of<QuestionBloc>(context).add(GetQuestions(
+                      index: index,
+                    ));
+                  },
                   controller: _tabController,
                   dragStartBehavior: DragStartBehavior.start,
-                  isScrollable: true,
+                  isScrollable: false,
                   tabs: tabs,
                   indicatorColor: Colors.blue,
                 ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shatter_vcs/bloc/user/user_bloc.dart';
 import 'package:shatter_vcs/screens/auth/auth_page.dart';
+import 'package:shatter_vcs/screens/auth/load_user_details_page.dart';
 import 'package:shatter_vcs/screens/home/home_page.dart';
 
 class AuthValidation extends StatefulWidget {
@@ -27,8 +28,8 @@ class _AuthValidationState extends State<AuthValidation> {
           if (snapshot.hasData) {
             print(
                 '\x1B[36m Welcome back !! ${snapshot.data!.displayName} \x1B[0m');
-            context.read<UserBloc>().add(GetUserDetails());
-            return const HomePage();
+            
+            return const LoadUserDetailsPage();
           }
           return const AuthPage();
         });

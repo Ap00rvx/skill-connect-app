@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shatter_vcs/bloc/auth/auth_bloc.dart';
+import 'package:shatter_vcs/screens/auth/load_user_details_page.dart';
 import 'package:shatter_vcs/screens/auth/user_details_page.dart';
 import 'package:shatter_vcs/screens/home/home_page.dart';
 import 'package:shatter_vcs/screens/static/terms_policy_page.dart';
@@ -126,10 +127,10 @@ class _AuthPageState extends State<AuthPage>
             showSnackbar('Welcome, ${state.user.email}!', false, context);
 
             if (!isSignUp) {
-          
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
+                MaterialPageRoute(
+                    builder: (context) => const HomePage()),
                 (route) => false,
               );
             }

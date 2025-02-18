@@ -27,6 +27,7 @@ class UserService {
 
     try {
       await _firestore.collection('users').doc(userId).set(user.toJson());
+      
       return left("User details saved successfully");
     } catch (e) {
       print("There is an error ---> " + e.toString());

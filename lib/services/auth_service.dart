@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shatter_vcs/config/app_exception.dart';
+import 'package:shatter_vcs/model/user_model.dart';
 
 class AuthService {
   final _firebase = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
 
   Future<Either<User, AppException>> signUp(
       String email, String password, String name) async {
@@ -27,10 +30,16 @@ class AuthService {
   }
 
   Future<void> signOut() async {
-    if (await GoogleSignIn().isSignedIn()) {
-      await GoogleSignIn().disconnect();
+    final googleSignIn = GoogleSignIn();
+    if (await googleSignIn.isSignedIn()) {
+      await googleSignIn.disconnect();
     }
-    await _firebase.signOut();
+
+    if (_firebase != null) {
+      await _firebase.signOut();
+    } else {
+      print("Firebase instance is null");
+    }
   }
 
   Future<Either<User, AppException>> signInWithGoogle() async {
@@ -39,7 +48,28 @@ class AuthService {
       if (credential != null) {
         final response = await _firebase.signInWithCredential(credential);
         if (response.user != null) {
-          return left(response.user!);
+          final userData = await _firestore
+              .collection('users')
+              .doc(response.user!.uid)
+              .get();
+
+          if (userData.exists) {
+            return left(response.user!);
+          } else {
+            final userModel = UserModel(
+                id: response.user!.uid,
+                email: response.user!.email!,
+                name: response.user!.displayName!,
+                profilePicture: response.user!.photoURL ?? "",
+                joinedAt: DateTime.now());
+
+            await _firestore
+                .collection('users')
+                .doc(response.user!.uid)
+                .set(userModel.toJson());
+
+            return left(response.user!);
+          }
         }
         return right(AppException("Error signing in user", "Credential"));
       }

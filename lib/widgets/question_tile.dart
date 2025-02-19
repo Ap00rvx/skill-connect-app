@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shatter_vcs/bloc/question/question_bloc.dart';
+import 'package:shatter_vcs/locator.dart';
 import 'package:shatter_vcs/model/question_model.dart';
 import 'package:shatter_vcs/services/app_service.dart';
+import 'package:shatter_vcs/services/user_service.dart';
 
 class QuestionTile extends StatefulWidget {
   final QuestionModel question;
@@ -13,13 +17,57 @@ class QuestionTile extends StatefulWidget {
 
 class _QuestionTileState extends State<QuestionTile> {
   bool isExpanded = false;
+  late bool isUpvoted;
+  late bool isDownvoted;
+  final String userId = locator.get<UserService>().user!.id;
+
+  @override
+  void initState() {
+    super.initState();
+    isUpvoted = widget.question.upvotes.contains(userId);
+    isDownvoted = widget.question.downvotes.contains(userId);
+  }
+
+  void _handleUpvote() {
+    setState(() {
+      if (isUpvoted) {
+        widget.question.upvotes.remove(userId);
+      } else {
+        widget.question.upvotes.add(userId);
+        widget.question.downvotes.remove(userId);
+        isDownvoted = false;
+      }
+      isUpvoted = !isUpvoted;
+
+      BlocProvider.of<QuestionBloc>(context).add(UpdateQuestionVote(
+        widget.question,
+        true,
+      ));
+    });
+  }
+
+  void _handleDownvote() {
+    setState(() {
+      if (isDownvoted) {
+        widget.question.downvotes.remove(userId);
+      } else {
+        widget.question.downvotes.add(userId);
+        widget.question.upvotes.remove(userId);
+        isUpvoted = false;
+      }
+      isDownvoted = !isDownvoted;
+      BlocProvider.of<QuestionBloc>(context).add(UpdateQuestionVote(
+        widget.question,
+        false,
+      ));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     String trimmedText = widget.question.description;
     String moreText = '';
 
-    // Measure text overflow
     final TextPainter textPainter = TextPainter(
       text: TextSpan(
         text: widget.question.description,
@@ -57,7 +105,6 @@ class _QuestionTileState extends State<QuestionTile> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // User Info Row
           Row(
             children: [
               const SizedBox(width: 10),
@@ -83,8 +130,6 @@ class _QuestionTileState extends State<QuestionTile> {
             ],
           ),
           const SizedBox(height: 10),
-
-          // Question Title
           Text(
             widget.question.title,
             style: const TextStyle(
@@ -93,8 +138,6 @@ class _QuestionTileState extends State<QuestionTile> {
             ),
           ),
           const SizedBox(height: 5),
-
-          // Question Description (Expandable)
           GestureDetector(
             onTap: () {
               setState(() {
@@ -127,8 +170,6 @@ class _QuestionTileState extends State<QuestionTile> {
             ),
           ),
           const SizedBox(height: 10),
-
-          // Tags
           Wrap(
             spacing: 6.0,
             runSpacing: 6.0,
@@ -141,21 +182,32 @@ class _QuestionTileState extends State<QuestionTile> {
             }).toList(),
           ),
           const SizedBox(height: 10),
-
-          // Upvotes, Downvotes, Answers Count
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
-                  const Icon(Icons.keyboard_arrow_up_rounded, size: 24),
+                  IconButton(
+                    icon: Icon(
+                      Icons.keyboard_arrow_up_rounded,
+                      size: 24,
+                      color: isUpvoted ? Colors.green : Colors.grey,
+                    ),
+                    onPressed: _handleUpvote,
+                  ),
                   const SizedBox(width: 5),
-                  Text('${widget.question.upvotes}'),
+                  Text('${widget.question.upvotes.length}'),
                   const SizedBox(width: 10),
-                  const Icon(Icons.keyboard_arrow_down_rounded, size: 24),
+                  IconButton(
+                    icon: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      size: 24,
+                      color: isDownvoted ? Colors.red : Colors.grey,
+                    ),
+                    onPressed: _handleDownvote,
+                  ),
                   const SizedBox(width: 5),
-                  Text('${widget.question.downvotes}'),
-                  const SizedBox(width: 10),
+                  Text('${widget.question.downvotes.length}'),
                 ],
               ),
               Row(

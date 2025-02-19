@@ -19,7 +19,9 @@ final class QuestionFailure extends QuestionState {
   QuestionFailure(this.exception);
 }
 
+
 final class QuestionSaved extends QuestionState {
   final QuestionModel question;
+
   QuestionSaved(this.question);
 }

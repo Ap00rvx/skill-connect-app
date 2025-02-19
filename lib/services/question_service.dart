@@ -54,20 +54,69 @@ class QuestionService {
     }
   }
 
+Future<Either<void, NetworkException>> updateVote(
+    QuestionModel question, bool isUpvote) async {
+  try {
+    final user = locator.get<UserService>().user!;
+    final String userId = user.id;
+    final questionRef = _firestore.collection('questions').doc(question.id);
+
+    await _firestore.runTransaction((transaction) async {
+      // Fetch the latest document snapshot
+      final snapshot = await transaction.get(questionRef);
+      if (!snapshot.exists) {
+        throw Exception("Question not found");
+      }
+
+      // Deserialize the latest data
+      QuestionModel latestQuestion = QuestionModel.fromJson(snapshot.data()!);
+
+      // If it's an upvote action
+      if (isUpvote) {
+        if (latestQuestion.upvotes.contains(userId)) {
+          latestQuestion.upvotes.remove(userId);
+        } else {
+          latestQuestion.upvotes.add(userId);
+          latestQuestion.downvotes.remove(userId); // Ensure mutual exclusivity
+        }
+      } else {
+        // If it's a downvote action
+        if (latestQuestion.downvotes.contains(userId)) {
+          latestQuestion.downvotes.remove(userId);
+        } else {
+          latestQuestion.downvotes.add(userId);
+          latestQuestion.upvotes.remove(userId); // Ensure mutual exclusivity
+        }
+      }
+
+      // Update Firestore inside the transaction
+      transaction.update(questionRef, latestQuestion.toJson());
+    });
+
+    return left(null);
+  } catch (e) {
+    print("Error updating vote ---> " + e.toString());
+    return right(NetworkException("Error updating vote", 500));
+  }
+}
+
+
+
   Future<Either<List<QuestionModel>, NetworkException>>
       getTopVotedQuestions() async {
     try {
       final response = await _firestore.collection('questions').get();
-      // sort question according to the upvotes
+
+      // Convert Firestore data to QuestionModel list
       final questions =
           response.docs.map((e) => QuestionModel.fromJson(e.data())).toList();
 
-      questions.sort((a, b) => b.upvotes.compareTo(a.upvotes));
+      // Sort questions based on the number of upvotes
+      questions.sort((a, b) => b.upvotes.length.compareTo(a.upvotes.length));
 
       return left(questions);
     } catch (e) {
       print("There is an error ---> " + e.toString());
-
       return right(NetworkException("Error fetching questions", 500));
     }
   }

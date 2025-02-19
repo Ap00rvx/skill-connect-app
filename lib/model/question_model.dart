@@ -5,10 +5,10 @@ class QuestionModel {
   final String authorId;
   final String authorName;
   final DateTime createdAt;
-   String image; 
+  String image;
   final List<String> tags;
-  final int upvotes;
-  final int downvotes;
+  final List<String> upvotes; // Changed from int to List<String>
+  final List<String> downvotes; // Changed from int to List<String>
   final List<AnswerModel> answers;
 
   QuestionModel({
@@ -20,10 +20,12 @@ class QuestionModel {
     required this.createdAt,
     this.image = '',
     List<String>? tags,
-    this.upvotes = 0,
-    this.downvotes = 0,
+    List<String>? upvotes,
+    List<String>? downvotes,
     List<AnswerModel>? answers,
   })  : tags = tags ?? [],
+        upvotes = upvotes ?? [],
+        downvotes = downvotes ?? [],
         answers = answers ?? [];
 
   factory QuestionModel.fromJson(Map<String, dynamic> json) {
@@ -36,8 +38,8 @@ class QuestionModel {
       image: json['image'] ?? '',
       createdAt: DateTime.parse(json['createdAt']),
       tags: List<String>.from(json['tags'] ?? []),
-      upvotes: json['upvotes'] ?? 0,
-      downvotes: json['downvotes'] ?? 0,
+      upvotes: List<String>.from(json['upvotes'] ?? []), // Changed to List<String>
+      downvotes: List<String>.from(json['downvotes'] ?? []), // Changed to List<String>
       answers: (json['answers'] as List<dynamic>?)?.map((a) => AnswerModel.fromJson(a)).toList() ?? [],
     );
   }
@@ -48,12 +50,12 @@ class QuestionModel {
       'title': title,
       'description': description,
       'authorId': authorId,
-      "image": image, 
+      "image": image,
       'authorName': authorName,
       'createdAt': createdAt.toIso8601String(),
       'tags': tags,
-      'upvotes': upvotes,
-      'downvotes': downvotes,
+      'upvotes': upvotes, // Now stores list of user IDs
+      'downvotes': downvotes, // Now stores list of user IDs
       'answers': answers.map((a) => a.toJson()).toList(),
     };
   }
@@ -66,8 +68,8 @@ class AnswerModel {
   final String authorName;
   final String description;
   final DateTime createdAt;
-  final int upvotes;
-  final int downvotes;
+  final List<String> upvotes; // Changed from int to List<String>
+  final List<String> downvotes; // Changed from int to List<String>
 
   AnswerModel({
     required this.id,
@@ -76,9 +78,10 @@ class AnswerModel {
     required this.authorName,
     required this.description,
     required this.createdAt,
-    this.upvotes = 0,
-    this.downvotes = 0,
-  });
+    List<String>? upvotes,
+    List<String>? downvotes,
+  })  : upvotes = upvotes ?? [],
+        downvotes = downvotes ?? [];
 
   factory AnswerModel.fromJson(Map<String, dynamic> json) {
     return AnswerModel(
@@ -88,8 +91,8 @@ class AnswerModel {
       authorName: json['authorName'] ?? '',
       description: json['description'] ?? '',
       createdAt: DateTime.parse(json['createdAt']),
-      upvotes: json['upvotes'] ?? 0,
-      downvotes: json['downvotes'] ?? 0,
+      upvotes: List<String>.from(json['upvotes'] ?? []), // Changed to List<String>
+      downvotes: List<String>.from(json['downvotes'] ?? []), // Changed to List<String>
     );
   }
 
@@ -101,8 +104,8 @@ class AnswerModel {
       'authorName': authorName,
       'description': description,
       'createdAt': createdAt.toIso8601String(),
-      'upvotes': upvotes,
-      'downvotes': downvotes,
+      'upvotes': upvotes, // Now stores list of user IDs
+      'downvotes': downvotes, // Now stores list of user IDs
     };
   }
 }

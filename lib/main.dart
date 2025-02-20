@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shatter_vcs/bloc/answer/answer_bloc.dart';
 import 'package:shatter_vcs/bloc/auth/auth_bloc.dart';
 import 'package:shatter_vcs/bloc/question/question_bloc.dart';
 import 'package:shatter_vcs/bloc/todo/todo_bloc.dart';
@@ -36,6 +37,9 @@ class RootApp extends StatelessWidget {
         BlocProvider(create: (_) => UserBloc()),
         BlocProvider(
           create: (context) => QuestionBloc(),
+        ),
+         BlocProvider(
+          create: (context) => AnswerBloc(),
         )
       ],
       child: MaterialApp(

@@ -1,3 +1,4 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shatter_vcs/bloc/question/question_bloc.dart';
@@ -5,6 +6,7 @@ import 'package:shatter_vcs/locator.dart';
 import 'package:shatter_vcs/model/question_model.dart';
 import 'package:shatter_vcs/services/app_service.dart';
 import 'package:shatter_vcs/services/user_service.dart';
+import 'package:shatter_vcs/widgets/answers_sheet.dart';
 
 class QuestionTile extends StatefulWidget {
   final QuestionModel question;
@@ -105,9 +107,11 @@ class _QuestionTileState extends State<QuestionTile> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // show question  image is it is not null
+
+          const SizedBox(height: 10),
           Row(
             children: [
-              const SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -210,13 +214,18 @@ class _QuestionTileState extends State<QuestionTile> {
                   Text('${widget.question.downvotes.length}'),
                 ],
               ),
-              Row(
-                children: [
-                  const Icon(Icons.chat_bubble_outline, size: 18),
-                  const SizedBox(width: 5),
-                  Text('${widget.question.answers.length} answers'),
-                  const SizedBox(width: 10),
-                ],
+              InkWell(
+                onTap: () async {
+                  showAnswersBottomSheet(context, widget.question);
+                },
+                child: Row(
+                  children: [
+                    const Icon(FluentIcons.chat_24_regular),
+                    const SizedBox(width: 5),
+                    Text('${widget.question.answers.length} answers'),
+                    const SizedBox(width: 10),
+                  ],
+                ),
               ),
             ],
           ),

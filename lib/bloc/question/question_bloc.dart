@@ -56,15 +56,18 @@ class QuestionBloc extends Bloc<QuestionEvent, QuestionState> {
       }
     });
 
-   on<UpdateQuestionVote>((event, emit)async {
-    try {
-      final response = await _questionService.updateVote(event.question,event.isUpVote);
-      response.fold((_) => {},
-          (exception) => emit(QuestionFailure(exception)));
-    } catch (e) {
-      print(e);
-      emit(QuestionFailure(NetworkException("Error updating vote", 500)));
-    }
-   }); 
+    on<UpdateQuestionVote>((event, emit) async {
+      try {
+        final response =
+            await _questionService.updateVote(event.question, event.isUpVote);
+        response.fold(
+            (_) => {}, (exception) => emit(QuestionFailure(exception)));
+      } catch (e) {
+        print(e);
+        emit(QuestionFailure(NetworkException("Error updating vote", 500)));
+      }
+    });
+
+
   }
 }

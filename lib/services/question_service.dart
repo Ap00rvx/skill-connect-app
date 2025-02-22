@@ -11,6 +11,8 @@ import 'package:shatter_vcs/services/user_service.dart';
 class QuestionService {
   final _firestore = FirebaseFirestore.instance;
 
+  List<QuestionModel> cachedQuestions = []; 
+
   Future<Either<String, NetworkException>> saveQuestion(
       QuestionModel question, File? image) async {
     try {
@@ -44,6 +46,7 @@ class QuestionService {
 
       final questions =
           response.docs.map((e) => QuestionModel.fromJson(e.data())).toList();
+              cachedQuestions = questions;
       List<QuestionModel> unAnsweredQuestions =
           questions.where((q) => q.answers.isEmpty).toList();
 
@@ -109,7 +112,7 @@ class QuestionService {
       // Convert Firestore data to QuestionModel list
       final questions =
           response.docs.map((e) => QuestionModel.fromJson(e.data())).toList();
-
+    cachedQuestions = questions;
       // Sort questions based on the number of upvotes
       questions.sort((a, b) => b.upvotes.length.compareTo(a.upvotes.length));
 
@@ -127,7 +130,7 @@ class QuestionService {
       // sort question according to the createAt
       final questions =
           response.docs.map((e) => QuestionModel.fromJson(e.data())).toList();
-
+    cachedQuestions = questions;
       questions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       return left(questions);
     } catch (e) {
@@ -149,12 +152,14 @@ class QuestionService {
       final questions =
           response.docs.map((e) => QuestionModel.fromJson(e.data())).toList();
 
+      cachedQuestions = questions;
       List<QuestionModel> interestQuestions = [];
 
       for (var question in questions) {
         for (var tag in question.tags) {
           if (userInterest.contains(tag.trim().toLowerCase())) {
             interestQuestions.add(question);
+            // print("Added question ---> " + question.toJson().toString());
             break; // Avoid adding the same question multiple times
           }
         }
@@ -176,8 +181,10 @@ class QuestionService {
       getAllQuestions() async {
     try {
       final response = await _firestore.collection('questions').get();
+
       final questions =
           response.docs.map((e) => QuestionModel.fromJson(e.data())).toList();
+          cachedQuestions = questions;
       return left(questions);
     } catch (e) {
       print("There is an error ---> " + e.toString());
@@ -191,7 +198,7 @@ class QuestionService {
       final response = await _firestore.collection('questions').doc(id).get();
       final question = QuestionModel.fromJson(response.data()!);
 
-      question.answers.sort((a, b) => b.createdAt.compareTo(a.createdAt)); 
+      question.answers.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       return left(question.answers);
     } catch (e) {
       print("There is an error ---> " + e.toString());
@@ -227,4 +234,6 @@ class QuestionService {
       return right(NetworkException("Error saving answer", 500));
     }
   }
+
+  
 }

@@ -226,6 +226,7 @@ class _AnswerBottomSheetState extends State<AnswerBottomSheet> {
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Divider(),
                                 Text(
                                   answer.description,
                                   style: const TextStyle(fontSize: 16),

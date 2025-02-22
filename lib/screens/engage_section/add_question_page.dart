@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -199,6 +200,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                 ),
               ),
               const SizedBox(height: 20),
+              const SizedBox(height: 20),
               const Text(
                 "Title",
                 style: TextStyle(
@@ -241,6 +243,68 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                   decoration: customInputDecoration(
                       hintText: "Describe your problem ")),
               const SizedBox(height: 10),
+              _selectedImage == null
+                  ? GestureDetector(
+                      onTap: _pickImage,
+                      child: DottedBorder(
+                        borderType: BorderType.RRect,
+                        color: Colors.black38,
+                        child: Container(
+                          width: double.infinity,
+                          height: 200,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  "assets/images/image.png",
+                                  height: 50,
+                                ),
+                                const SizedBox(height: 10),
+                                const Text(
+                                    "Uploading image will make your question more clear and understandable",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 10,
+                                        color: Colors.black54)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Stack(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black38, width: 2),
+                          ),
+                          child: Image.file(
+                            _selectedImage!,
+                            height: 200,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          ),
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.close,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _selectedImage = null;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+              const SizedBox(height: 20),
               const Text(
                 "Tags",
                 style: TextStyle(
@@ -284,35 +348,6 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                 }).toList(),
               ),
               const SizedBox(height: 10),
-              _selectedImage == null
-                  ? ElevatedButton.icon(
-                      style: buttonStyle,
-                      onPressed: _pickImage,
-                      icon: const Icon(Icons.image),
-                      label: const Text("Upload Image (Optional)"),
-                    )
-                  : Stack(
-                      children: [
-                        Image.file(
-                          _selectedImage!,
-                          height: 350,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
-                        Positioned(
-                          right: 0,
-                          top: 0,
-                          child: IconButton(
-                            icon: const Icon(Icons.cancel, color: Colors.red),
-                            onPressed: () {
-                              setState(() {
-                                _selectedImage = null;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
             ],
           ),
         ),

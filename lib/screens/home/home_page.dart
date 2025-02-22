@@ -6,6 +6,7 @@ import 'package:shatter_vcs/locator.dart';
 import 'package:shatter_vcs/main.dart';
 import 'package:shatter_vcs/screens/engage_section/engage_page.dart';
 import 'package:shatter_vcs/screens/profile/profile_page.dart';
+import 'package:shatter_vcs/screens/skill_share/skill_share_page.dart';
 import 'package:shatter_vcs/screens/todo/to_do_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,12 +18,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List pages = const [
-    Placeholder(),
+    SkillSharePage(),
     ToDoPage(),
     EngagePage(),
     ProfilePage(),
   ];
-  int index = 2;
+  int index = 0;
   @override
   void initState() {
     // TODO: implement initState
@@ -56,9 +57,9 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(FluentIcons.clipboard_task_list_rtl_24_regular),
               label: "Goal List"),
           BottomNavigationBarItem(
-              activeIcon: Icon(FluentIcons.question_24_filled),
-              icon: Icon(FluentIcons.question_24_regular),
-              label: "Engage"),
+              activeIcon: Icon(FluentIcons.virtual_network_20_filled),
+              icon: Icon(FluentIcons.virtual_network_20_regular),
+              label: "Community"),
           BottomNavigationBarItem(
             activeIcon: Icon(FluentIcons.person_24_filled),
             icon: Icon(FluentIcons.person_24_regular),

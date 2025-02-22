@@ -29,7 +29,7 @@ class _AuthValidationState extends State<AuthValidation> {
             print(
                 '\x1B[36m Welcome back !! ${snapshot.data!.displayName} \x1B[0m');
             
-            return const LoadUserDetailsPage();
+            return const HomePage();
           }
           return const AuthPage();
         });

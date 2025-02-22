@@ -117,7 +117,6 @@ class _EngagePageState extends State<EngagePage> with TickerProviderStateMixin {
             itemCount: state.questions.length,
             itemBuilder: (context, index) {
               final question = state.questions[index];
-              // postion the controller to the end
 
               return Container(
                 padding: EdgeInsets.all(10),
@@ -199,6 +198,7 @@ class _EngagePageState extends State<EngagePage> with TickerProviderStateMixin {
                       controller: _tabController,
                       dragStartBehavior: DragStartBehavior.start,
                       isScrollable: false,
+                      labelColor: Colors.blue,
                       tabs: const [
                         Tab(text: "UnAnswered"),
                         Tab(text: "Top Voted"),

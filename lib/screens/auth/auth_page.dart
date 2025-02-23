@@ -115,6 +115,7 @@ class _AuthPageState extends State<AuthPage>
           }
           if (state is AuthSignUpSuccess) {
             isSignUp = true;
+            print('User signed up');
             Navigator.pop(context);
             showSnackbar('Welcome, ${state.user.email}!', false, context);
             Navigator.push(

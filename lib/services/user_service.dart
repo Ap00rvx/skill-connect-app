@@ -83,5 +83,18 @@ class UserService {
     }
   }
 
+  Future<String> fetchUserProfileImage(String id) async {
+    try {
+      final response = await _firestore.collection('users').doc(id).get();
+      if (response.exists) {
+        final user = UserModel.fromJson(response.data()!);
+        return user.profilePicture.toString();
+      }
+      return "";
+    } catch (e) {
+      return "";
+    }
+  }
+
   UserModel? get user => _user;
 }

@@ -201,25 +201,56 @@ class _AnswerBottomSheetState extends State<AnswerBottomSheet> {
                           child: ListTile(
                             isThreeLine: true,
                             tileColor: Colors.grey.shade50,
-                            title: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            title: Row(
                               children: [
-                                Text(
-                                  answer.authorName ==
-                                          locator.get<UserService>().user!.name
-                                      ? "You"
-                                      : answer.authorName,
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  AppService.timeAgo(answer.createdAt),
-                                  style: TextStyle(
-                                    color: Colors.grey.shade600,
-                                    fontSize: 12,
-                                  ),
+                                FutureBuilder(
+                                    future: UserService()
+                                        .fetchUserProfileImage(answer.authorId),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        // createa shimmer circular avator
+                                        return Shimmer.fromColors(
+                                          baseColor: Colors.grey.shade300,
+                                          highlightColor: Colors.grey.shade100,
+                                          child: CircleAvatar(
+                                            backgroundColor:
+                                                Colors.grey.shade300,
+                                            radius: 18,
+                                          ),
+                                        );
+                                      }
+                                      return CircleAvatar(
+                                        backgroundImage: NetworkImage(
+                                            snapshot.data.toString()),
+                                        radius: 18,
+                                      );
+                                    }),
+                                const SizedBox(width: 14),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      answer.authorName ==
+                                              locator
+                                                  .get<UserService>()
+                                                  .user!
+                                                  .name
+                                          ? "You"
+                                          : answer.authorName,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      AppService.timeAgo(answer.createdAt),
+                                      style: TextStyle(
+                                        color: Colors.grey.shade600,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

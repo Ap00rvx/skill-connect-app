@@ -41,7 +41,6 @@ class _UtilitiesListState extends State<UtilitiesList> {
                       style: TextStyle(color: Colors.red),
                     ),
                     onTap: () async {
-                      Navigator.pop(context);
                       showSnackbar("User Signed out", false, context);
                       if (mounted) {
                         await AuthService().signOut().then(

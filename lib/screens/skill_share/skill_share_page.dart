@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +7,7 @@ import 'package:shatter_vcs/model/user_model.dart';
 import 'package:shatter_vcs/services/user_service.dart';
 import 'package:shatter_vcs/widgets/collab_section.dart';
 import 'package:shatter_vcs/widgets/hero.dart';
+import 'package:shatter_vcs/widgets/learning_section.dart';
 import 'package:shatter_vcs/widgets/skill_carousel.dart';
 import 'package:shatter_vcs/widgets/skill_share_shimmer.dart';
 
@@ -166,7 +166,31 @@ class _SkillSharePageState extends State<SkillSharePage> {
                       ),
                     ],
                   ),
-                  const CollabSection()
+                  const CollabSection(),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      const Text(
+                        "Learn from Industry Experts",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18),
+                      ),
+                      const Spacer(),
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text(
+                          "See All",
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 14,
+                              fontWeight: FontWeight.normal),
+                        ),
+                      ),
+                    ],
+                  ),
+                  LearningSection()
                 ],
               ),
             ),

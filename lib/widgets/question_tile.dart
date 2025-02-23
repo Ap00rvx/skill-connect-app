@@ -7,6 +7,7 @@ import 'package:shatter_vcs/model/question_model.dart';
 import 'package:shatter_vcs/services/app_service.dart';
 import 'package:shatter_vcs/services/user_service.dart';
 import 'package:shatter_vcs/widgets/answers_sheet.dart';
+import 'package:shimmer/shimmer.dart';
 
 class QuestionTile extends StatefulWidget {
   final QuestionModel question;
@@ -112,6 +113,27 @@ class _QuestionTileState extends State<QuestionTile> {
           const SizedBox(height: 10),
           Row(
             children: [
+              FutureBuilder(
+                  future: UserService()
+                      .fetchUserProfileImage(widget.question.authorId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // createa shimmer circular avator
+                      return Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade100,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.grey.shade300,
+                          radius: 20,
+                        ),
+                      );
+                    }
+                    return CircleAvatar(
+                      backgroundImage: NetworkImage(snapshot.data.toString()),
+                      radius: 20,
+                    );
+                  }),
+              const SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

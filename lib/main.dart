@@ -10,6 +10,7 @@ import 'package:shatter_vcs/bloc/todo/todo_bloc.dart';
 import 'package:shatter_vcs/bloc/user/user_bloc.dart';
 import 'package:shatter_vcs/firebase_options.dart';
 import 'package:shatter_vcs/locator.dart';
+import 'package:shatter_vcs/screens/auth/user_details_page.dart';
 import 'package:shatter_vcs/widgets/auth_validation.dart';
 
 void main() async {
@@ -22,7 +23,7 @@ void main() async {
   ).then((_) {
     print('\x1B[36m App initialized \x1B[0m');
   });
-  setUp(); 
+  setUp();
   runApp(const RootApp());
 }
 
@@ -39,10 +40,10 @@ class RootApp extends StatelessWidget {
         BlocProvider(
           create: (context) => QuestionBloc(),
         ),
-         BlocProvider(
+        BlocProvider(
           create: (context) => AnswerBloc(),
         ),
-         BlocProvider(
+        BlocProvider(
           create: (context) => SearchBloc(),
         )
       ],
